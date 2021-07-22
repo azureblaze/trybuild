@@ -319,6 +319,17 @@ impl Test {
             return Err(Error::ShouldNotHaveCompiled);
         }
 
+        if !self.expected_failure_strings.is_empty() {
+            for expected_string in &self.expected_failure_strings {
+                if !variations.preferred().contains(expected_string){
+                    message::missing_error_message(expected_string, preferred);
+                    return Err(Error::Mismatch);
+                }
+            }
+            message::ok();
+            return Ok(());
+        }
+
         let stderr_path = self.path.with_extension("stderr");
 
         if !stderr_path.exists() {
@@ -415,6 +426,7 @@ fn expand_globs(tests: &[Test]) -> Vec<ExpandedTest> {
                                 test: Test {
                                     path,
                                     expected: expanded.test.expected,
+                                    expected_failure_strings: Vec::new(),
                                 },
                                 error: None,
                             });

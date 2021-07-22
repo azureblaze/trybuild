@@ -266,6 +266,7 @@ struct Runner {
 struct Test {
     path: PathBuf,
     expected: Expected,
+    expected_failure_strings: Vec<String>,
 }
 
 #[derive(Copy, Clone, Debug)]
@@ -286,6 +287,7 @@ impl TestCases {
         self.runner.borrow_mut().tests.push(Test {
             path: path.as_ref().to_owned(),
             expected: Expected::Pass,
+            expected_failure_strings: Vec::new(),
         });
     }
 
@@ -293,6 +295,15 @@ impl TestCases {
         self.runner.borrow_mut().tests.push(Test {
             path: path.as_ref().to_owned(),
             expected: Expected::CompileFail,
+            expected_failure_strings: Vec::new(),
+        });
+    }
+
+    pub fn compile_failed_with<P: AsRef<Path>>(&self, path: P, strings: Vec<&str>) {
+        self.runner.borrow_mut().tests.push(Test {
+            path: path.as_ref().to_owned(),
+            expected: Expected::CompileFail,
+            expected_failure_strings: strings.iter().map(|&s| s.to_owned()).collect()
         });
     }
 }

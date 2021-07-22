@@ -149,6 +149,22 @@ pub(crate) fn mismatch(expected: &str, actual: &str) {
     println!();
 }
 
+pub(crate) fn missing_error_message(expected: &str, actual: &str) {
+    term::bold_color(Red);
+    println!("missing_error_message");
+    term::reset();
+    println!();
+    term::bold_color(Blue);
+    println!("EXPECTED TO CONTAIN:");
+    term::color(Blue);
+    println!("{}", expected);
+    term::reset();
+    println!();
+    term::bold_color(Red);
+    println!("ACTUAL OUTPUT:");
+    snippet(Red, actual);
+}
+
 pub(crate) fn output(warnings: &str, output: &Output) {
     let success = output.status.success();
     let stdout = normalize::trim(&output.stdout);
